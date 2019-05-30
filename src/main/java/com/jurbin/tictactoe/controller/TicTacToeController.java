@@ -24,6 +24,17 @@ public class TicTacToeController {
         return gameRepository.findAll();
     }
 
+    @GetMapping("/getAGame/{id}")
+    @ResponseBody
+    private Game getGames(@PathVariable(value = "id") Integer id) {
+        Optional<Game> optionalGame = gameRepository.findById(id);
+
+        if(optionalGame.isPresent())
+            return optionalGame.get();
+
+        return null;
+    }
+
     @PostMapping("/createGame")
     @ResponseBody
     private Game createGame(@RequestParam String playerOneName, @RequestParam String playerTwoName) {
@@ -31,9 +42,9 @@ public class TicTacToeController {
         return gameRepository.save(game);
     }
 
-    @PostMapping("/takeTurn")
+    @PostMapping("/takeTurn/{gameId}/{row}/{column}")
     @ResponseBody
-    private Game takeTurn(@RequestParam Integer gameId, @RequestParam Integer row, @RequestParam Integer column) {
+    private Game takeTurn(@PathVariable(value="gameId") Integer gameId, @PathVariable(value="row") Integer row, @PathVariable(value="column") Integer column) {
         Game game;
 
         Optional<Game> optionalGame = gameRepository.findById(gameId);
